@@ -3,6 +3,7 @@ import scala.io._
 import scala.math._
 import edu.luc.cs.ui._
 import scala.util.{ Try, Success, Failure }
+import java.io._
 
 object gradefiles extends App {
 
@@ -10,6 +11,7 @@ object gradefiles extends App {
   val filegrade = GradeCalc(coursename)
     
     def GradeCalc(coursename: String) {
+        val textfile = new PrintWriter(new File(coursename + "_solution.txt"))
         val categoriesarray = Source.fromFile("categories_"+coursename+".txt").getLines.toArray
         val catlength = categoriesarray.length
         val arraysize = (catlength/3)
@@ -53,64 +55,53 @@ object gradefiles extends App {
             var project = 0
             var classparticipation = 0
             var goat = studentdata
-           
-            while(goat.length!= 0){
+               
                var firstsec = goat.slice(0,1)
                var secondsec = firstsec.mkString
                var thirdsec = secondsec.split(", ")
-                
-                 if (secondsec.contains("Ho")){
-                    homework = homework + (thirdsec(2).toInt)
-                }else if(secondsec.contains("La")){
-                    labs = labs + (thirdsec(2).toInt)
-                }else if(secondsec.contains("Ex")){
-                    exams = exams + (thirdsec(2).toInt)
-                }else if(secondsec.contains("Pr")){
-                    project = project + (thirdsec(2).toInt)
-                }else if(secondsec.contains("Cl")){
-                    classparticipation = classparticipation + (thirdsec(2).toInt)
-                }
-                goat = goat.drop(1) 
+               var lip = headerarray.mkString
+               var pin = lip.split(", ")
+               var catgrade = 0.0
+               var dalist = ""
+            while(pin.length!= 0){
+                catgrade = 0
+               for(i<-0 until studentdata.length){
+                   if(studentdata(i).contains(pin(0))){
+                       catgrade = catgrade + (thirdsec(2).toDouble)
+                   }
+               }
+               dalist = dalist + s"$catgrade, "    
+               pin = pin.drop(1)
             }
+                var golem = dalist.split(", ")
+                println(golem.mkString)
+                     
                 var cheese = weightarray.mkString
                 var hop = cheese.split(", ")
                 var apple = headerarray.mkString
                 var dom = apple.split(", ")
                 var hot = gradearray.mkString
                 var cot = hot.split(", ")
-                var homeworkt = 0.0
-                var homeworkF = 0.0
-                var labst = 0.0
-                var labsF = 0.0
-                var examst = 0.0
-                var examsF = 0.0
-                var projectt = 0.0
-                var projectF = 0.0
-                var classparticipationt = 0.0
-                var classparticipationF = 0.0
-                for(i<-0 until hop.length){
-                    if(dom(0).contains("Ho")){
-                         homeworkt = homework.toDouble/(cot(0).toDouble)
-                         homeworkF = homeworkt * (hop(0).toDouble)
-                    }else if(dom(0).contains("La")){
-                         labst = labs.toDouble/(cot(0).toDouble)
-                         labsF = labst * (hop(0).toDouble)
-                    }else if(dom(0).contains("Ex")){
-                         examst = exams.toDouble/(cot(0).toDouble)
-                         examsF = examst * (hop(0).toDouble)
-                    }else if(dom(0).contains("Pr")){
-                         projectt = project.toDouble/(cot(0).toDouble)
-                         projectF = projectt * (hop(0).toDouble)
-                    }else if(dom(0).contains("Cl")){
-                         classparticipationt = classparticipation.toDouble/(cot(0).toDouble)
-                         classparticipationF = classparticipationt * (hop(0).toDouble)
-                    }
-                    hop = hop.drop(1)
-                    dom = dom.drop(1)
-                    cot = cot.drop(1)
+                var gradeval = 0.0
+                var gradevalF = 0.0
+                var gradecalc = 0.0
+                
+            while(dom.length!=0){
+                for(i<-0 until studentdata.length){
+                    if(studentdata(i).contains(dom(0))){
+                         gradeval = golem(0).toDouble/(cot(0).toDouble) //category name here
+                         gradevalF = gradeval * (hop(0).toDouble)
+                    }  
                 }
+                golem = golem.drop(1)
+                dom = dom.drop(1)
+                cot = cot.drop(1)
+                hop = hop.drop(1)
+                gradecalc = gradecalc + gradevalF
+            }
+                
 
-            var gradetotal = ((homeworkF + labsF + examsF + projectF + classparticipationF)/(weightsum))
+            var gradetotal = ((gradecalc)/(weightsum))
             var gradetotalz = BigDecimal(gradetotal).setScale(1, BigDecimal.RoundingMode.HALF_UP).toDouble
             var letter = "A"
             
@@ -168,12 +159,13 @@ object gradefiles extends App {
                 }
                 tree = tree.drop(1)
                 }
-                   println(last.mkString+", "+first.mkString+": "+gradetotalz+ " "+ letter + " Missing: "+ extra)
+                   textfile.write(last.mkString+", "+first.mkString+": "+gradetotalz+ " "+ letter + " Missing: "+ extra+ "\n")
             }else{
-            println(last.mkString+", "+first.mkString+": "+gradetotalz+ " "+ letter)
+            textfile.write(last.mkString+", "+first.mkString+": "+gradetotalz+ " "+ letter+"\n")
                 }
             bob = bob.drop(1)    
         }
+        textfile.close()
         } 
 }    
 
