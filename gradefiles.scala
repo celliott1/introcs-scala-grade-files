@@ -56,26 +56,24 @@ object gradefiles extends App {
             var classparticipation = 0
             var goat = studentdata
                
-               var firstsec = goat.slice(0,1)
-               var secondsec = firstsec.mkString
-               var thirdsec = secondsec.split(", ")
+             
                var lip = headerarray.mkString
                var pin = lip.split(", ")
                var catgrade = 0.0
                var dalist = ""
             while(pin.length!= 0){
-                catgrade = 0
                for(i<-0 until studentdata.length){
                    if(studentdata(i).contains(pin(0))){
+                       var secondsec = studentdata(i).mkString
+                       var thirdsec = secondsec.split(", ")
                        catgrade = catgrade + (thirdsec(2).toDouble)
                    }
                }
                dalist = dalist + s"$catgrade, "    
                pin = pin.drop(1)
+               catgrade = 0.0
             }
                 var golem = dalist.split(", ")
-                println(golem.mkString)
-                     
                 var cheese = weightarray.mkString
                 var hop = cheese.split(", ")
                 var apple = headerarray.mkString
